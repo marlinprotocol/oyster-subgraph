@@ -1,7 +1,7 @@
 {
-  "arbitrum-rinkeby": {
-    "Contract": {
-      "address": "0x29cbA3c69CB4Cf89a4e8b5f698df7C607A488e4f"
+  "arbitrum-goerli": {
+    "implementation": {
+      "address": "0x09c7369e72726dBE24C34e1822D38cC919b793DC"
     }
   }
 }
