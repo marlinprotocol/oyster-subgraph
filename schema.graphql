@@ -1,12 +1,28 @@
 type Job @entity {
   id: ID!
-  live: Boolean
-  metadata: String
-  owner: Bytes
-  provider: Bytes
-  rate: BigInt
-  balance: BigInt
-  lastSettled: BigInt
+  live: Boolean!
+  metadata: String!
+  owner: Bytes!
+  provider: Bytes!
+  rate: BigInt!
+  balance: BigInt!
+  lastSettled: BigInt!
+  amountPaid: BigInt!
+  createdAt: BigInt!
+  settlementHistory: [SettlementHistory!]! @derivedFrom(field: "job")
+}
+
+type SettlementHistory @entity {
+  id: ID!
+  job: Job!
+  ts: BigInt!
+  amount: BigInt!
+}
+
+type ReviseRateRequest @entity {
+  id: ID!
+  jobId: Bytes!
+  value: BigInt!
 }
 
 type Provider @entity {

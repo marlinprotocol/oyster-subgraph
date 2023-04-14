@@ -1,5 +1,9 @@
 [
-  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
   {
     "anonymous": false,
     "inputs": [
@@ -16,7 +20,7 @@
         "type": "address"
       }
     ],
-    "name": "implementationAdminChanged",
+    "name": "AdminChanged",
     "type": "event"
   },
   {
@@ -29,7 +33,20 @@
         "type": "address"
       }
     ],
-    "name": "implementationBeaconUpgraded",
+    "name": "BeaconUpgraded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "version",
+        "type": "uint8"
+      }
+    ],
+    "name": "Initialized",
     "type": "event"
   },
   {
@@ -127,6 +144,19 @@
         "internalType": "bytes32",
         "name": "job",
         "type": "bytes32"
+      }
+    ],
+    "name": "JobReviseRateCancelled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "job",
+        "type": "bytes32"
       },
       {
         "indexed": false,
@@ -135,7 +165,26 @@
         "type": "uint256"
       }
     ],
-    "name": "JobRevisedRate",
+    "name": "JobReviseRateFinalized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "job",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "JobReviseRateInitiated",
     "type": "event"
   },
   {
@@ -424,55 +473,109 @@
         "type": "address"
       }
     ],
-    "name": "implementationUpgraded",
+    "name": "Upgraded",
     "type": "event"
   },
   {
     "inputs": [],
     "name": "DEFAULT_ADMIN_ROLE",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "RATE_LOCK_SELECTOR",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" }
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      }
     ],
     "name": "getRoleAdmin",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "uint256", "name": "index", "type": "uint256" }
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
     ],
     "name": "getRoleMember",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" }
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      }
     ],
     "name": "getRoleMemberCount",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
     "name": "grantRole",
     "outputs": [],
@@ -481,11 +584,25 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
     "name": "hasRole",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -514,7 +631,11 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "_job", "type": "bytes32" }
+      {
+        "internalType": "bytes32",
+        "name": "_job",
+        "type": "bytes32"
+      }
     ],
     "name": "jobClose",
     "outputs": [],
@@ -523,8 +644,16 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "_job", "type": "bytes32" },
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+      {
+        "internalType": "bytes32",
+        "name": "_job",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
     ],
     "name": "jobDeposit",
     "outputs": [],
@@ -533,10 +662,26 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "_metadata", "type": "string" },
-      { "internalType": "address", "name": "_provider", "type": "address" },
-      { "internalType": "uint256", "name": "_rate", "type": "uint256" },
-      { "internalType": "uint256", "name": "_balance", "type": "uint256" }
+      {
+        "internalType": "string",
+        "name": "_metadata",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_provider",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_balance",
+        "type": "uint256"
+      }
     ],
     "name": "jobOpen",
     "outputs": [],
@@ -545,7 +690,11 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "_job", "type": "bytes32" }
+      {
+        "internalType": "bytes32",
+        "name": "_job",
+        "type": "bytes32"
+      }
     ],
     "name": "jobReviseRateCancel",
     "outputs": [],
@@ -554,7 +703,11 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "_job", "type": "bytes32" }
+      {
+        "internalType": "bytes32",
+        "name": "_job",
+        "type": "bytes32"
+      }
     ],
     "name": "jobReviseRateFinalize",
     "outputs": [],
@@ -563,8 +716,16 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "_job", "type": "bytes32" },
-      { "internalType": "uint256", "name": "_newRate", "type": "uint256" }
+      {
+        "internalType": "bytes32",
+        "name": "_job",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_newRate",
+        "type": "uint256"
+      }
     ],
     "name": "jobReviseRateInitiate",
     "outputs": [],
@@ -573,7 +734,11 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "_job", "type": "bytes32" }
+      {
+        "internalType": "bytes32",
+        "name": "_job",
+        "type": "bytes32"
+      }
     ],
     "name": "jobSettle",
     "outputs": [],
@@ -582,8 +747,16 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "_job", "type": "bytes32" },
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+      {
+        "internalType": "bytes32",
+        "name": "_job",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
     ],
     "name": "jobWithdraw",
     "outputs": [],
@@ -591,38 +764,100 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "name": "jobs",
     "outputs": [
-      { "internalType": "string", "name": "metadata", "type": "string" },
-      { "internalType": "address", "name": "owner", "type": "address" },
-      { "internalType": "address", "name": "provider", "type": "address" },
-      { "internalType": "uint256", "name": "rate", "type": "uint256" },
-      { "internalType": "uint256", "name": "balance", "type": "uint256" },
-      { "internalType": "uint256", "name": "lastSettled", "type": "uint256" }
+      {
+        "internalType": "string",
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "provider",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "rate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastSettled",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "name": "lockWaitTime",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "name": "locks",
     "outputs": [
-      { "internalType": "uint256", "name": "unlockTime", "type": "uint256" },
-      { "internalType": "uint256", "name": "iValue", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "unlockTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "iValue",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "string", "name": "_cp", "type": "string" }],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_cp",
+        "type": "string"
+      }
+    ],
     "name": "providerAdd",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -636,16 +871,43 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "string", "name": "_cp", "type": "string" }],
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_cp",
+        "type": "string"
+      }
+    ],
     "name": "providerUpdateWithCp",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
     "name": "renounceRole",
     "outputs": [],
@@ -654,8 +916,16 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
     ],
     "name": "revokeRole",
     "outputs": [],
@@ -664,10 +934,20 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
     ],
     "name": "supportsInterface",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -691,7 +971,11 @@
         "name": "newImplementation",
         "type": "address"
       },
-      { "internalType": "bytes", "name": "data", "type": "bytes" }
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
     ],
     "name": "upgradeToAndCall",
     "outputs": [],

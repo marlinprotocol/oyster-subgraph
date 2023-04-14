@@ -6,7 +6,8 @@ dataSources:
     name: implementation
     network: arbitrum-goerli
     source:
-      address: "0x09c7369e72726dBE24C34e1822D38cC919b793DC"
+      address: "0x0F5F91BA30a00bD43Bd19466f020B3E5fc7a49ec"
+      startBlock: 15990237
       abi: implementation
     mapping:
       kind: ethereum/events
@@ -18,10 +19,10 @@ dataSources:
         - name: implementation
           file: ./abis/implementation.json
       eventHandlers:
-        - event: implementationAdminChanged(address,address)
-          handler: handleimplementationAdminChanged
-        - event: implementationBeaconUpgraded(indexed address)
-          handler: handleimplementationBeaconUpgraded
+        - event: AdminChanged(address,address)
+          handler: handleAdminChanged
+        - event: BeaconUpgraded(indexed address)
+          handler: handleBeaconUpgraded
         - event: JobClosed(indexed bytes32)
           handler: handleJobClosed
         - event: JobDeposited(indexed bytes32,indexed address,uint256)
@@ -29,8 +30,12 @@ dataSources:
         - event: JobOpened(indexed bytes32,string,indexed address,indexed
             address,uint256,uint256,uint256)
           handler: handleJobOpened
-        - event: JobRevisedRate(indexed bytes32,uint256)
-          handler: handleJobRevisedRate
+        - event: JobReviseRateInitiated(indexed bytes32,uint256)
+          handler: handleJobRevisedRateInitiated
+        - event: JobReviseRateCancelled(indexed bytes32)
+          handler: handleJobReviseRateCancelled
+        - event: JobReviseRateFinalized(indexed bytes32,uint256)
+          handler: handleJobReviseRateFinalized
         - event: JobSettled(indexed bytes32,uint256,uint256)
           handler: handleJobSettled
         - event: JobWithdrew(indexed bytes32,indexed address,uint256)
