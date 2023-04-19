@@ -10,15 +10,17 @@ import {
     JobReviseRateFinalized,
     ProviderAdded,
     ProviderRemoved,
-    ProviderUpdatedWithCp
+    ProviderUpdatedWithCp,
+    LockWaitTimeUpdated
 } from "../generated/implementation/implementation";
 
-import { bigInt, BigInt } from "@graphprotocol/graph-ts/common/numbers";
-// Import entity class
-import { Job, SettlementHistory, Provider, ReviseRateRequest } from "../generated/schema";
+import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
+import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, LockTimes } from "../generated/schema";
 import { log, store } from "@graphprotocol/graph-ts";
+import { FEE_REVISE_LOCK_SELECTOR } from "./constants";
 
-// Job event handlers
+// stop initiate stuff
+// contract change so that operators can withdraw in one go
 
 export function handleJobOpened(event: JobOpened): void {
     const id = event.params.job.toHex();
@@ -28,17 +30,29 @@ export function handleJobOpened(event: JobOpened): void {
         job = new Job(id);
     }
 
-    job.live = true;
     job.metadata = event.params.metadata;
     job.owner = event.params.owner;
     job.provider = event.params.provider;
     job.rate = event.params.rate;
     job.balance = event.params.balance;
     job.lastSettled = event.params.timestamp;
-    job.amountPaid = BigInt.zero();
+    job.totalDeposit = BigInt.zero();
+    job.refund = BigInt.zero();
     job.createdAt = event.params.timestamp;
 
     job.save();
+
+    const depositId = event.params.job.toHex() + event.transaction.hash.toHexString() + "deposit";
+    let depositInstance = DepositHistory.load(depositId);
+    if(!depositInstance) {
+        depositInstance = new DepositHistory(depositId);
+        depositInstance.job = id;
+        depositInstance.timestamp = event.block.timestamp;
+        depositInstance.amount = BigInt.zero();
+        depositInstance.isWithdrawal = false;
+    }
+    depositInstance.amount = depositInstance.amount.plus(event.params.balance);
+    depositInstance.save();
 }
 
 export function handleJobDeposited(event: JobDeposited): void {
@@ -50,19 +64,46 @@ export function handleJobDeposited(event: JobDeposited): void {
         return;
     }
     job.balance = job.balance.plus(event.params.amount);
+    job.totalDeposit = job.totalDeposit.plus(event.params.amount);
     job.save();
+
+    const depositId = id + event.block.timestamp.toString() + "deposit";
+    let depositInstance = DepositHistory.load(depositId);
+    if(!depositInstance) {
+        depositInstance = new DepositHistory(depositId);
+        depositInstance.job = id;
+        depositInstance.timestamp = event.block.timestamp;
+        depositInstance.amount = BigInt.zero();
+        depositInstance.isWithdrawal = false;
+    }
+    depositInstance.amount = depositInstance.amount.plus(event.params.amount);
+    depositInstance.save();
 }
 
 export function handleJobClosed(event: JobClosed): void {
     const id = event.params.job.toHex();
-    const job = Job.load(id);
+    let job = Job.load(id);
 
     if (!job) {
         log.error("Closed non existent job with id {}", [id]);
         return;
-    } else {
-        store.remove("Job", id);
     }
+
+    job.refund = job.balance;
+    job.balance = BigInt.zero();
+    job.save();
+
+    const withdrawId = id + event.block.timestamp.toString() + "withdraw";
+    let withdrawInstance = DepositHistory.load(withdrawId);
+    if(!withdrawInstance) {
+        withdrawInstance = new DepositHistory(withdrawId);
+        withdrawInstance.job = id;
+        withdrawInstance.timestamp = event.block.timestamp;
+        withdrawInstance.amount = BigInt.zero();
+        withdrawInstance.isWithdrawal = true;
+    }
+    withdrawInstance.amount = withdrawInstance.amount.plus(job.balance);
+    withdrawInstance.save();
 }
 
 export function handleJobRevisedRateInitiated(event: JobReviseRateInitiated): void {
@@ -75,18 +116,46 @@ export function handleJobRevisedRateInitiated(event: JobReviseRateInitiated): vo
 
     request.jobId = event.params.job;
     request.value = event.params.newRate;
+    request.updatesAt = event.block.timestamp;
+
+    let lockTime = LockTimes.load(FEE_REVISE_LOCK_SELECTOR);
+
+    if(lockTime) {
+        request.updatesAt = event.block.timestamp.plus(lockTime.value);
+    }
+
+    request.status = "IN_PROGRESS";
+    
     request.save();
 }
 
 export function handleJobRevisedRateCancelled(event: JobReviseRateCancelled): void {
-    store.remove("ReviseRateRequest", event.params.job.toHex());
+    const id = event.params.job.toHex();
+    let request = ReviseRateRequest.load(id);
+
+    if(!request) {
+        return;
+    }
+
+    request.status = "CANCELLED";
+
+    request.save();
 }
 
 export function handleJobRevisedRateFinalized(event: JobReviseRateFinalized): void {
     const id = event.params.job.toHex();
-    const job = Job.load(id);
 
-    store.remove("ReviseRateRequest", event.params.job.toHex());
+    let request = ReviseRateRequest.load(id);
+
+    if(!request) {
+        return;
+    }
+
+    request.status = "COMPLETED";
+
+    request.save();
+
+    const job = Job.load(id);
 
     if (!job) {
         return
@@ -123,7 +192,7 @@ export function handleJobSettled(event: JobSettled): void {
 
     settlement = new SettlementHistory(settlementId);
     settlement.job = id;
-    settlement.ts = event.block.timestamp;
+    settlement.timestamp = event.block.timestamp;
     settlement.amount = amount;
     settlement.save();
 }
@@ -134,15 +203,24 @@ export function handleJobWithdrew(event: JobWithdrew): void {
 
     if (!job) {
         return
-    } else {
-        const amount = event.params.amount;
-        if (amount.gt(job.balance)) {
-            job.balance = BigInt.zero();
-        } else {
-            job.balance = job.balance.minus(amount);
-        }  
-        job.save();      
-    } 
+    }
+
+    const amount = event.params.amount;
+    job.balance = job.balance.minus(amount);
+    job.totalDeposit = job.totalDeposit.minus(amount);
+    job.save();
+
+    const withdrawId = id + event.block.timestamp.toString() + "withdraw";
+    let withdrawInstance = DepositHistory.load(withdrawId);
+    if(!withdrawInstance) {
+        withdrawInstance = new DepositHistory(withdrawId);
+        withdrawInstance.job = id;
+        withdrawInstance.timestamp = event.block.timestamp;
+        withdrawInstance.amount = BigInt.zero();
+        withdrawInstance.isWithdrawal = true;
+    }
+    withdrawInstance.amount = withdrawInstance.amount.plus(amount);
+    withdrawInstance.save();
 }
 
 //provider event handlers
@@ -177,4 +255,16 @@ export function handleProviderUpdatedWithCp(event: ProviderUpdatedWithCp): void 
         provider.cp = event.params.newCp;
         provider.save();
     }
+}
+
+export function handleLockWaitTimeUpdated(event: LockWaitTimeUpdated): void {
+    const id = event.params.selector.toHexString();
+    let lockTime = LockTimes.load(id);
+
+    if(!lockTime) {
+        lockTime = new LockTimes(id);
+    }
+
+    lockTime.value = event.params.updatedLockTime;
+    lockTime.save();
 }

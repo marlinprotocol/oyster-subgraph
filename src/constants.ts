@@ -1,0 +1,1 @@
+export const FEE_REVISE_LOCK_SELECTOR: string = "0xbb00c34f1a27e23493f1bd516e88ec0af9b091cc990f207e765f5bd5af012243";

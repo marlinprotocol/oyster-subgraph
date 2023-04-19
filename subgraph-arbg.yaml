@@ -46,4 +46,6 @@ dataSources:
           handler: handleProviderRemoved
         - event: ProviderUpdatedWithCp(indexed address,string)
           handler: handleProviderUpdatedWithCp
+        - event: LockWaitTimeUpdated(indexed bytes32,uint256,uint256)
+          handler: handleLockWaitTimeUpdated
       file: ./src/implementation.ts

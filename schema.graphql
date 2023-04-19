@@ -1,27 +1,44 @@
+enum RequestState {
+  IN_PROGRESS,
+  CANCELLED,
+  COMPLETED
+}
+
 type Job @entity {
   id: ID!
-  live: Boolean!
   metadata: String!
   owner: Bytes!
   provider: Bytes!
   rate: BigInt!
   balance: BigInt!
   lastSettled: BigInt!
-  amountPaid: BigInt!
+  totalDeposit: BigInt!
+  refund: BigInt! # only updated on job close
   createdAt: BigInt!
   settlementHistory: [SettlementHistory!]! @derivedFrom(field: "job")
+  depositHistory: [DepositHistory!]! @derivedFrom(field: "job")
 }
 
 type SettlementHistory @entity {
   id: ID!
   job: Job!
-  ts: BigInt!
+  timestamp: BigInt!
   amount: BigInt!
+}
+
+type DepositHistory @entity {
+  id: ID!
+  job: Job!
+  timestamp: BigInt!
+  amount: BigInt!
+  isWithdrawal: Boolean!
 }
 
 type ReviseRateRequest @entity {
   id: ID!
   jobId: Bytes!
+  updatesAt: BigInt!
+  status: RequestState!
   value: BigInt!
 }
 
@@ -29,4 +46,9 @@ type Provider @entity {
   id: ID! #id same as owner address
   cp: String
   live: Boolean
+}
+
+type LockTimes @entity {
+  id: String!
+  value: BigInt!
 }
