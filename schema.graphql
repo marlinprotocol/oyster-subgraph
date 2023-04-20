@@ -24,6 +24,7 @@ type SettlementHistory @entity {
   job: Job!
   timestamp: BigInt!
   amount: BigInt!
+  txHash: Bytes!
 }
 
 type DepositHistory @entity {

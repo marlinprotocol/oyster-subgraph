@@ -197,6 +197,8 @@ export function handleJobSettled(event: JobSettled): void {
     settlement.job = id;
     settlement.timestamp = event.block.timestamp;
     settlement.amount = amount;
+    settlement.txHash = event.transaction.hash;
+
     settlement.save();
 }
 
