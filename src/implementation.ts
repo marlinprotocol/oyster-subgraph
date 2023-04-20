@@ -36,7 +36,7 @@ export function handleJobOpened(event: JobOpened): void {
     job.rate = event.params.rate;
     job.balance = event.params.balance;
     job.lastSettled = event.params.timestamp;
-    job.totalDeposit = BigInt.zero();
+    job.totalDeposit = event.params.balance;
     job.refund = BigInt.zero();
     job.createdAt = event.params.timestamp;
 
@@ -50,6 +50,7 @@ export function handleJobOpened(event: JobOpened): void {
         depositInstance.timestamp = event.block.timestamp;
         depositInstance.amount = BigInt.zero();
         depositInstance.isWithdrawal = false;
+        depositInstance.txHash = event.transaction.hash;
     }
     depositInstance.amount = depositInstance.amount.plus(event.params.balance);
     depositInstance.save();
@@ -75,6 +76,7 @@ export function handleJobDeposited(event: JobDeposited): void {
         depositInstance.timestamp = event.block.timestamp;
         depositInstance.amount = BigInt.zero();
         depositInstance.isWithdrawal = false;
+        depositInstance.txHash = event.transaction.hash;
     }
     depositInstance.amount = depositInstance.amount.plus(event.params.amount);
     depositInstance.save();
@@ -101,6 +103,7 @@ export function handleJobClosed(event: JobClosed): void {
         withdrawInstance.timestamp = event.block.timestamp;
         withdrawInstance.amount = BigInt.zero();
         withdrawInstance.isWithdrawal = true;
+        withdrawInstance.txHash = event.transaction.hash;
     }
     withdrawInstance.amount = withdrawInstance.amount.plus(job.balance);
     withdrawInstance.save();
@@ -218,6 +221,7 @@ export function handleJobWithdrew(event: JobWithdrew): void {
         withdrawInstance.timestamp = event.block.timestamp;
         withdrawInstance.amount = BigInt.zero();
         withdrawInstance.isWithdrawal = true;
+        withdrawInstance.txHash = event.transaction.hash;
     }
     withdrawInstance.amount = withdrawInstance.amount.plus(amount);
     withdrawInstance.save();
