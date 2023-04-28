@@ -117,7 +117,7 @@ export function handleJobRevisedRateInitiated(event: JobReviseRateInitiated): vo
         request = new ReviseRateRequest(id);
     }
 
-    request.jobId = event.params.job;
+    request.job = event.params.job.toHex();
     request.value = event.params.newRate;
     request.updatesAt = event.block.timestamp;
 

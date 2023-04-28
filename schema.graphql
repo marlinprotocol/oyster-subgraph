@@ -15,6 +15,7 @@ type Job @entity {
   totalDeposit: BigInt!
   refund: BigInt! # only updated on job close
   createdAt: BigInt!
+  rateRevisionHistory: [ReviseRateRequest!]! @derivedFrom(field: "job")
   settlementHistory: [SettlementHistory!]! @derivedFrom(field: "job")
   depositHistory: [DepositHistory!]! @derivedFrom(field: "job")
 }
@@ -38,7 +39,7 @@ type DepositHistory @entity {
 
 type ReviseRateRequest @entity {
   id: ID!
-  jobId: Bytes!
+  job: Job!
   updatesAt: BigInt!
   status: RequestState!
   value: BigInt!
