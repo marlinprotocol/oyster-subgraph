@@ -15,7 +15,7 @@ import {
 } from "../generated/implementation/implementation";
 
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
-import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, LockTimes } from "../generated/schema";
+import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, LockTime } from "../generated/schema";
 import { log, store } from "@graphprotocol/graph-ts";
 import { FEE_REVISE_LOCK_SELECTOR } from "./constants";
 
@@ -121,7 +121,7 @@ export function handleJobRevisedRateInitiated(event: JobReviseRateInitiated): vo
     request.value = event.params.newRate;
     request.updatesAt = event.block.timestamp;
 
-    let lockTime = LockTimes.load(FEE_REVISE_LOCK_SELECTOR);
+    let lockTime = LockTime.load(FEE_REVISE_LOCK_SELECTOR);
 
     if(lockTime) {
         request.updatesAt = event.block.timestamp.plus(lockTime.value);
@@ -265,12 +265,13 @@ export function handleProviderUpdatedWithCp(event: ProviderUpdatedWithCp): void 
 
 export function handleLockWaitTimeUpdated(event: LockWaitTimeUpdated): void {
     const id = event.params.selector.toHexString();
-    let lockTime = LockTimes.load(id);
+    let lockTime = LockTime.load(id);
 
     if(!lockTime) {
-        lockTime = new LockTimes(id);
+        lockTime = new LockTime(id);
     }
 
+    lockTime.id = id;
     lockTime.value = event.params.updatedLockTime;
     lockTime.save();
 }

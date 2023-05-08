@@ -51,7 +51,7 @@ type Provider @entity {
   live: Boolean
 }
 
-type LockTimes @entity {
-  id: String!
+type LockTime @entity {
+  id: ID!
   value: BigInt!
 }
