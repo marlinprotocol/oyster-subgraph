@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: implementation
-    network: arbitrum-goerli
+    network: arbitrum-one
     source:
-      address: "0xb5a356c93901E6E3111A160581383Fd1A532e2a2"
-      startBlock: 29640641
+      address: "0x9d95D61eA056721E358BC49fE995caBF3B86A34B"
+      startBlock: 87252070
       abi: implementation
     mapping:
       kind: ethereum/events
