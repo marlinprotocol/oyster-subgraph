@@ -6,7 +6,7 @@ dataSources:
     name: implementation
     network: arbitrum-goerli
     source:
-      address: "0xb5a356c93901E6E3111A160581383Fd1A532e2a2"
+      address: "0xdBC4779B69bdC0f657ba35648e434bAe042a00E0"
       startBlock: 29640641
       abi: implementation
     mapping:
