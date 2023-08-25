@@ -19,10 +19,6 @@ dataSources:
         - name: implementation
           file: ./abis/implementation.json
       eventHandlers:
-        - event: AdminChanged(address,address)
-          handler: handleAdminChanged
-        - event: BeaconUpgraded(indexed address)
-          handler: handleBeaconUpgraded
         - event: JobClosed(indexed bytes32)
           handler: handleJobClosed
         - event: JobDeposited(indexed bytes32,indexed address,uint256)
