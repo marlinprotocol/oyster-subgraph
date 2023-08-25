@@ -3,16 +3,18 @@
   "license": "MIT",
   "scripts": {
     "codegen": "graph codegen",
+    "create-linea": "graph create --node https://graph-deploy.linea.build marlinprotocol/oyster-linea",
     "build": "graph build",
     "deploy": "graph deploy marlinprotocol/oyster-arb1 --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
     "deploy-staging": "graph deploy marlin-staging/oyster-arb1 --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
     "deploy-arbg": "graph deploy marlinprotocol/enclaves-arb-goerli subgraph-arbg.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
     "deploy-arbg-preview": "graph deploy marlin-staging/enclaves-preview subgraph-arbg-preview.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
+    "deploy-linea": "graph deploy marlinprotocol/oyster-linea --ipfs https://graph-ipfs.linea.build --node https://graph-deploy.linea.build --version-label ",
     "test": "graph test"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.35.0",
-    "@graphprotocol/graph-ts": "0.28.1"
+    "@graphprotocol/graph-cli": "0.56.0",
+    "@graphprotocol/graph-ts": "0.31.0"
   },
-  "devDependencies": { "matchstick-as": "0.5.0" }
+  "devDependencies": { "matchstick-as": "0.5.2" }
 }
