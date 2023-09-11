@@ -2,3 +2,4 @@ node_modules/
 build/
 generated/
 yarn.lock
+.DS_Store
