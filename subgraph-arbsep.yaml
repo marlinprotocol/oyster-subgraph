@@ -43,4 +43,6 @@ dataSources:
           handler: handleJobReviseRateFinalized
         - event: JobMetadataUpdated(indexed bytes32,string)
           handler: handleJobMetadataUpdated
+        - event: LockWaitTimeUpdated(indexed bytes32,uint256,uint256)
+          handler: handleLockWaitTimeUpdated
       file: ./src/MarketV1.ts
