@@ -12,7 +12,7 @@ import {
     ProviderRemoved,
     ProviderUpdatedWithCp,
     LockWaitTimeUpdated
-} from "../generated/implementation/implementation";
+} from "../generated/MarketV1/MarketV1";
 
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
 import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, LockTime } from "../generated/schema";
