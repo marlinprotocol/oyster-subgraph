@@ -7,6 +7,7 @@ import {
     JobReviseRateInitiated,
     JobReviseRateCancelled,
     JobReviseRateFinalized,
+    JobMetadataUpdated,
     ProviderAdded,
     ProviderRemoved,
     ProviderUpdatedWithCp,
@@ -224,6 +225,18 @@ export function handleJobWithdrew(event: JobWithdrew): void {
     }
     withdrawInstance.amount = withdrawInstance.amount.plus(amount);
     withdrawInstance.save();
+}
+
+export function handleJobMetadataUpdated(event: JobMetadataUpdated): void {
+    const id = event.params.job.toHex();
+    const job = Job.load(id);
+
+    if (!job) {
+        return
+    }
+
+    job.metadata = event.params.metadata;
+    job.save();
 }
 
 export function handleProviderAdded(event: ProviderAdded): void {
