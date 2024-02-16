@@ -106,7 +106,7 @@ export function handleJobClosed(event: JobClosed): void {
     withdrawInstance.save();
 }
 
-export function handleJobRevisedRateInitiated(event: JobReviseRateInitiated): void {
+export function handleJobReviseRateInitiated(event: JobReviseRateInitiated): void {
     const id = event.params.job.toHex();
     let request = ReviseRateRequest.load(id);
 
@@ -129,7 +129,7 @@ export function handleJobRevisedRateInitiated(event: JobReviseRateInitiated): vo
     request.save();
 }
 
-export function handleJobRevisedRateCancelled(event: JobReviseRateCancelled): void {
+export function handleJobReviseRateCancelled(event: JobReviseRateCancelled): void {
     const id = event.params.job.toHex();
     let request = ReviseRateRequest.load(id);
 
@@ -142,7 +142,7 @@ export function handleJobRevisedRateCancelled(event: JobReviseRateCancelled): vo
     request.save();
 }
 
-export function handleJobRevisedRateFinalized(event: JobReviseRateFinalized): void {
+export function handleJobReviseRateFinalized(event: JobReviseRateFinalized): void {
     const id = event.params.job.toHex();
 
     let request = ReviseRateRequest.load(id);
