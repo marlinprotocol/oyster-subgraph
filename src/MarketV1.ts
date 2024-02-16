@@ -1,4 +1,3 @@
-// Import event classes
 import {
     JobOpened,
     JobSettled,
@@ -11,7 +10,7 @@ import {
     ProviderAdded,
     ProviderRemoved,
     ProviderUpdatedWithCp,
-    LockWaitTimeUpdated
+    LockWaitTimeUpdated,
 } from "../generated/MarketV1/MarketV1";
 
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
@@ -19,8 +18,6 @@ import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, Lo
 import { log, store } from "@graphprotocol/graph-ts";
 import { FEE_REVISE_LOCK_SELECTOR } from "./constants";
 
-// stop initiate stuff
-// contract change so that operators can withdraw in one go
 
 export function handleJobOpened(event: JobOpened): void {
     const id = event.params.job.toHex();
@@ -228,8 +225,6 @@ export function handleJobWithdrew(event: JobWithdrew): void {
     withdrawInstance.amount = withdrawInstance.amount.plus(amount);
     withdrawInstance.save();
 }
-
-//provider event handlers
 
 export function handleProviderAdded(event: ProviderAdded): void {
     const id = event.params.provider.toHex();
