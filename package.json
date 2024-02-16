@@ -10,6 +10,7 @@
     "deploy-staging": "graph deploy marlin-staging/oyster-arb1 --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
     "deploy-arbg": "graph deploy marlinprotocol/enclaves-arb-goerli subgraph-arbg.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
     "deploy-arbg-preview": "graph deploy marlin-staging/enclaves-preview subgraph-arbg-preview.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
+    "deploy-arbsep": "graph deploy marlinprotocol/oyster-arbitrum-sepolia subgraph-arbsep.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
     "deploy-linea": "graph deploy marlinprotocol/oyster-linea subgraph-linea.yaml --ipfs https://graph-ipfs.linea.build --node https://graph-deploy.linea.build --version-label ",
     "deploy-linea-goerli": "graph deploy marlinprotocol/oyster-linea-goerli subgraph-linea-goerli.yaml --ipfs https://graph-ipfs.goerli.linea.build --node https://graph-deploy.goerli.linea.build --version-label ",
     "test": "graph test"
