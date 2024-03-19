@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: implementation
-    network: arbitrum-goerli
+    network: arbitrum-sepolia
     source:
-      address: "0xdBC4779B69bdC0f657ba35648e434bAe042a00E0"
-      startBlock: 29640641
+      address: "0xDcD2846DCA523Db1C8F3c842a41A58099dE26A0A"
+      startBlock: 9277500
       abi: implementation
     mapping:
       kind: ethereum/events
@@ -19,10 +19,10 @@ dataSources:
         - name: implementation
           file: ./abis/implementation.json
       eventHandlers:
-        - event: AdminChanged(address,address)
-          handler: handleAdminChanged
-        - event: BeaconUpgraded(indexed address)
-          handler: handleBeaconUpgraded
+        # - event: AdminChanged(address,address)
+        #   handler: handleAdminChanged
+        # - event: BeaconUpgraded(indexed address)
+        #   handler: handleBeaconUpgraded
         - event: JobClosed(indexed bytes32)
           handler: handleJobClosed
         - event: JobDeposited(indexed bytes32,indexed address,uint256)
