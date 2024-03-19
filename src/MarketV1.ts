@@ -1,4 +1,3 @@
-// Import event classes
 import {
     JobOpened,
     JobSettled,
@@ -8,25 +7,24 @@ import {
     JobReviseRateInitiated,
     JobReviseRateCancelled,
     JobReviseRateFinalized,
+    JobMetadataUpdated,
     ProviderAdded,
     ProviderRemoved,
     ProviderUpdatedWithCp,
-    LockWaitTimeUpdated
-} from "../generated/implementation/implementation";
+    LockWaitTimeUpdated,
+} from "../generated/MarketV1/MarketV1";
 
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
 import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, LockTime } from "../generated/schema";
 import { log, store } from "@graphprotocol/graph-ts";
-import { FEE_REVISE_LOCK_SELECTOR } from "./constants";
 
-// stop initiate stuff
-// contract change so that operators can withdraw in one go
+export const FEE_REVISE_LOCK_SELECTOR: string = "0xbb00c34f1a27e23493f1bd516e88ec0af9b091cc990f207e765f5bd5af012243";
 
 export function handleJobOpened(event: JobOpened): void {
     const id = event.params.job.toHex();
     let job = Job.load(id);
 
-    if(!job) {
+    if (!job) {
         job = new Job(id);
     }
 
@@ -44,7 +42,7 @@ export function handleJobOpened(event: JobOpened): void {
 
     const depositId = event.params.job.toHex() + event.transaction.hash.toHexString() + "deposit";
     let depositInstance = DepositHistory.load(depositId);
-    if(!depositInstance) {
+    if (!depositInstance) {
         depositInstance = new DepositHistory(depositId);
         depositInstance.job = id;
         depositInstance.timestamp = event.block.timestamp;
@@ -70,7 +68,7 @@ export function handleJobDeposited(event: JobDeposited): void {
 
     const depositId = id + event.block.timestamp.toString() + "deposit";
     let depositInstance = DepositHistory.load(depositId);
-    if(!depositInstance) {
+    if (!depositInstance) {
         depositInstance = new DepositHistory(depositId);
         depositInstance.job = id;
         depositInstance.timestamp = event.block.timestamp;
@@ -97,7 +95,7 @@ export function handleJobClosed(event: JobClosed): void {
 
     const withdrawId = id + event.block.timestamp.toString() + "withdraw";
     let withdrawInstance = DepositHistory.load(withdrawId);
-    if(!withdrawInstance) {
+    if (!withdrawInstance) {
         withdrawInstance = new DepositHistory(withdrawId);
         withdrawInstance.job = id;
         withdrawInstance.timestamp = event.block.timestamp;
@@ -109,11 +107,11 @@ export function handleJobClosed(event: JobClosed): void {
     withdrawInstance.save();
 }
 
-export function handleJobRevisedRateInitiated(event: JobReviseRateInitiated): void {
+export function handleJobReviseRateInitiated(event: JobReviseRateInitiated): void {
     const id = event.params.job.toHex();
     let request = ReviseRateRequest.load(id);
 
-    if(!request) {
+    if (!request) {
         request = new ReviseRateRequest(id);
     }
 
@@ -123,20 +121,20 @@ export function handleJobRevisedRateInitiated(event: JobReviseRateInitiated): vo
 
     let lockTime = LockTime.load(FEE_REVISE_LOCK_SELECTOR);
 
-    if(lockTime) {
+    if (lockTime) {
         request.updatesAt = event.block.timestamp.plus(lockTime.value);
     }
 
     request.status = "IN_PROGRESS";
-    
+
     request.save();
 }
 
-export function handleJobRevisedRateCancelled(event: JobReviseRateCancelled): void {
+export function handleJobReviseRateCancelled(event: JobReviseRateCancelled): void {
     const id = event.params.job.toHex();
     let request = ReviseRateRequest.load(id);
 
-    if(!request) {
+    if (!request) {
         return;
     }
 
@@ -145,12 +143,12 @@ export function handleJobRevisedRateCancelled(event: JobReviseRateCancelled): vo
     request.save();
 }
 
-export function handleJobRevisedRateFinalized(event: JobReviseRateFinalized): void {
+export function handleJobReviseRateFinalized(event: JobReviseRateFinalized): void {
     const id = event.params.job.toHex();
 
     let request = ReviseRateRequest.load(id);
 
-    if(!request) {
+    if (!request) {
         return;
     }
 
@@ -163,7 +161,7 @@ export function handleJobRevisedRateFinalized(event: JobReviseRateFinalized): vo
     if (!job) {
         return
     }
-    
+
     job.rate = event.params.newRate;
     job.save();
 }
@@ -181,15 +179,15 @@ export function handleJobSettled(event: JobSettled): void {
         job.balance = BigInt.zero();
     } else {
         job.balance = job.balance.minus(amount);
-    } 
-    
+    }
+
     job.lastSettled = event.block.timestamp;
     job.save();
 
     let settlementId = id + event.block.timestamp.toString();
     let settlement = SettlementHistory.load(settlementId);
 
-    if(settlement) {
+    if (settlement) {
         return;
     }
 
@@ -217,7 +215,7 @@ export function handleJobWithdrew(event: JobWithdrew): void {
 
     const withdrawId = id + event.block.timestamp.toString() + "withdraw";
     let withdrawInstance = DepositHistory.load(withdrawId);
-    if(!withdrawInstance) {
+    if (!withdrawInstance) {
         withdrawInstance = new DepositHistory(withdrawId);
         withdrawInstance.job = id;
         withdrawInstance.timestamp = event.block.timestamp;
@@ -229,7 +227,17 @@ export function handleJobWithdrew(event: JobWithdrew): void {
     withdrawInstance.save();
 }
 
-//provider event handlers
+export function handleJobMetadataUpdated(event: JobMetadataUpdated): void {
+    const id = event.params.job.toHex();
+    const job = Job.load(id);
+
+    if (!job) {
+        return
+    }
+
+    job.metadata = event.params.metadata;
+    job.save();
+}
 
 export function handleProviderAdded(event: ProviderAdded): void {
     const id = event.params.provider.toHex();
@@ -267,7 +275,7 @@ export function handleLockWaitTimeUpdated(event: LockWaitTimeUpdated): void {
     const id = event.params.selector.toHexString();
     let lockTime = LockTime.load(id);
 
-    if(!lockTime) {
+    if (!lockTime) {
         lockTime = new LockTime(id);
     }
 

@@ -1,0 +1,48 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: MarketV1
+    network: arbitrum-sepolia
+    source:
+      address: "0xDcD2846DCA523Db1C8F3c842a41A58099dE26A0A"
+      startBlock: 9277504
+      abi: MarketV1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Job
+      abis:
+        - name: MarketV1
+          file: ./abis/MarketV1.json
+      eventHandlers:
+        - event: ProviderAdded(indexed address,string)
+          handler: handleProviderAdded
+        - event: ProviderRemoved(indexed address)
+          handler: handleProviderRemoved
+        - event: ProviderUpdatedWithCp(indexed address,string)
+          handler: handleProviderUpdatedWithCp
+        - event: JobOpened(indexed bytes32,string,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleJobOpened
+        - event: JobSettled(indexed bytes32,uint256,uint256)
+          handler: handleJobSettled
+        - event: JobClosed(indexed bytes32)
+          handler: handleJobClosed
+        - event: JobDeposited(indexed bytes32,indexed address,uint256)
+          handler: handleJobDeposited
+        - event: JobWithdrew(indexed bytes32,indexed address,uint256)
+          handler: handleJobWithdrew
+        - event: JobReviseRateInitiated(indexed bytes32,uint256)
+          handler: handleJobReviseRateInitiated
+        - event: JobReviseRateCancelled(indexed bytes32)
+          handler: handleJobReviseRateCancelled
+        - event: JobReviseRateFinalized(indexed bytes32,uint256)
+          handler: handleJobReviseRateFinalized
+        - event: JobMetadataUpdated(indexed bytes32,string)
+          handler: handleJobMetadataUpdated
+        - event: LockWaitTimeUpdated(indexed bytes32,uint256,uint256)
+          handler: handleLockWaitTimeUpdated
+      file: ./src/MarketV1.ts
