@@ -17,8 +17,8 @@ import {
 import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
 import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, LockTime } from "../generated/schema";
 import { log, store } from "@graphprotocol/graph-ts";
-import { FEE_REVISE_LOCK_SELECTOR } from "./constants";
 
+export const FEE_REVISE_LOCK_SELECTOR: string = "0xbb00c34f1a27e23493f1bd516e88ec0af9b091cc990f207e765f5bd5af012243";
 
 export function handleJobOpened(event: JobOpened): void {
     const id = event.params.job.toHex();
