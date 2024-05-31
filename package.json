@@ -2,27 +2,20 @@
   "name": "oyster-subgraph",
   "license": "MIT",
   "scripts": {
-    "auth": "graph auth --product hosted-service",
+    "auth": "graph auth --studio ",
     "codegen": "graph codegen",
-    "create-linea": "graph create --node https://graph-deploy.linea.build marlinprotocol/oyster-linea",
-    "create-linea-goerli": "graph create --node https://graph-deploy.goerli.linea.build marlinprotocol/oyster-linea-goerli",
     "build": "graph build",
-    "deploy": "graph deploy marlinprotocol/oyster-arb1 --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
-    "deploy-staging": "graph deploy marlin-staging/oyster-arb1 --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
+    "deploy": "graph deploy --studio marlin-oyster-arbitrum",
     "codegen-arb-dev": "graph codegen subgraph-arb-dev.yaml",
-    "deploy-arb-dev": "graph deploy marlin-staging/enclaves-arb-dev subgraph-arb-dev.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
-    "deploy-arb-preview": "graph deploy marlin-staging/enclaves-arb-preview subgraph-arb-preview.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
-    "deploy-arbg": "graph deploy marlinprotocol/enclaves-arb-goerli subgraph-arbg.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
-    "deploy-arbg-preview": "graph deploy marlin-staging/enclaves-preview subgraph-arbg-preview.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
-    "deploy-arbsep": "graph deploy marlinprotocol/oyster-arbitrum-sepolia subgraph-arbsep.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/ --access-token",
-    "deploy-linea": "graph deploy marlinprotocol/oyster-linea subgraph-linea.yaml --ipfs https://graph-ipfs.linea.build --node https://graph-deploy.linea.build --version-label ",
-    "deploy-linea-goerli": "graph deploy marlinprotocol/oyster-linea-goerli subgraph-linea-goerli.yaml --ipfs https://graph-ipfs.goerli.linea.build --node https://graph-deploy.goerli.linea.build --version-label ",
-    "deploy-polygon": "graph deploy marlin-staging/oyster-polygon subgraph-polygon.yaml --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy-arb-dev": "graph deploy --studio marlin-oyster-arbitrum-dev subgraph-arb-dev.yaml",
+    "deploy-linea": "graph deploy --studio marlin-oyster-linea subgraph-linea.yaml",
+    "deploy-linea-dev": "graph deploy --studio marlin-oyster-linea-dev subgraph-linea-dev.yaml",
+    "deploy-polygon": "graph deploy --studio marlin-oyster-polygon subgraph-polygon.yaml",
     "test": "graph test"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.68.0",
-    "@graphprotocol/graph-ts": "0.32.0"
+    "@graphprotocol/graph-cli": "0.73.0",
+    "@graphprotocol/graph-ts": "0.35.1"
   },
   "devDependencies": { "matchstick-as": "0.6.0" }
 }
