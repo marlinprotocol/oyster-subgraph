@@ -88,11 +88,7 @@ export function handleJobClosed(event: JobClosed): void {
         log.error("Closed non existent job with id {}", [id]);
         return;
     }
-
-    job.refund = job.balance;
-    job.balance = BigInt.zero();
-    job.save();
-
+    
     const withdrawId = id + event.block.timestamp.toString() + "withdraw";
     let withdrawInstance = DepositHistory.load(withdrawId);
     if (!withdrawInstance) {
@@ -105,6 +101,11 @@ export function handleJobClosed(event: JobClosed): void {
     }
     withdrawInstance.amount = withdrawInstance.amount.plus(job.balance);
     withdrawInstance.save();
+
+    job.refund = job.balance;
+    job.balance = BigInt.zero();
+    job.save();
+
 }
 
 export function handleJobReviseRateInitiated(event: JobReviseRateInitiated): void {
