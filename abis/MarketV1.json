@@ -28,6 +28,25 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "bytes32",
+        "name": "job",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "name": "JobMetadataUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "beacon",
         "type": "address"

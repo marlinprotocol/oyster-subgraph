@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: MarketV1
-    network: arbitrum-sepolia
+    network: linea-goerli
     source:
-      address: "0xDcD2846DCA523Db1C8F3c842a41A58099dE26A0A"
-      startBlock: 9277504
+      address: "0xe43EFeA7f40a885f4B35a149CAB5FC3fE01564C6"
+      startBlock: 1509130
       abi: MarketV1
     mapping:
       kind: ethereum/events
@@ -19,30 +19,31 @@ dataSources:
         - name: MarketV1
           file: ./abis/MarketV1.json
       eventHandlers:
-        - event: ProviderAdded(indexed address,string)
-          handler: handleProviderAdded
-        - event: ProviderRemoved(indexed address)
-          handler: handleProviderRemoved
-        - event: ProviderUpdatedWithCp(indexed address,string)
-          handler: handleProviderUpdatedWithCp
-        - event: JobOpened(indexed bytes32,string,indexed address,indexed address,uint256,uint256,uint256)
-          handler: handleJobOpened
-        - event: JobSettled(indexed bytes32,uint256,uint256)
-          handler: handleJobSettled
         - event: JobClosed(indexed bytes32)
           handler: handleJobClosed
         - event: JobDeposited(indexed bytes32,indexed address,uint256)
           handler: handleJobDeposited
-        - event: JobWithdrew(indexed bytes32,indexed address,uint256)
-          handler: handleJobWithdrew
+        - event: JobOpened(indexed bytes32,string,indexed address,indexed
+            address,uint256,uint256,uint256)
+          handler: handleJobOpened
         - event: JobReviseRateInitiated(indexed bytes32,uint256)
           handler: handleJobReviseRateInitiated
         - event: JobReviseRateCancelled(indexed bytes32)
           handler: handleJobReviseRateCancelled
         - event: JobReviseRateFinalized(indexed bytes32,uint256)
           handler: handleJobReviseRateFinalized
-        - event: JobMetadataUpdated(indexed bytes32,string)
-          handler: handleJobMetadataUpdated
+        - event: JobSettled(indexed bytes32,uint256,uint256)
+          handler: handleJobSettled
+        - event: JobWithdrew(indexed bytes32,indexed address,uint256)
+          handler: handleJobWithdrew
+        - event: ProviderAdded(indexed address,string)
+          handler: handleProviderAdded
+        - event: ProviderRemoved(indexed address)
+          handler: handleProviderRemoved
+        - event: ProviderUpdatedWithCp(indexed address,string)
+          handler: handleProviderUpdatedWithCp
         - event: LockWaitTimeUpdated(indexed bytes32,uint256,uint256)
           handler: handleLockWaitTimeUpdated
+        - event: JobMetadataUpdated(indexed bytes32,string)
+          handler: handleJobMetadataUpdated
       file: ./src/MarketV1.ts

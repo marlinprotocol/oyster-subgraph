@@ -3,12 +3,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: implementation
+    name: MarketV1
     network: arbitrum-sepolia
     source:
       address: "0xDcD2846DCA523Db1C8F3c842a41A58099dE26A0A"
       startBlock: 9277500
-      abi: implementation
+      abi: MarketV1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -16,13 +16,9 @@ dataSources:
       entities:
         - Job
       abis:
-        - name: implementation
-          file: ./abis/implementation.json
+        - name: MarketV1
+          file: ./abis/MarketV1.json
       eventHandlers:
-        # - event: AdminChanged(address,address)
-        #   handler: handleAdminChanged
-        # - event: BeaconUpgraded(indexed address)
-        #   handler: handleBeaconUpgraded
         - event: JobClosed(indexed bytes32)
           handler: handleJobClosed
         - event: JobDeposited(indexed bytes32,indexed address,uint256)
@@ -31,11 +27,11 @@ dataSources:
             address,uint256,uint256,uint256)
           handler: handleJobOpened
         - event: JobReviseRateInitiated(indexed bytes32,uint256)
-          handler: handleJobRevisedRateInitiated
+          handler: handleJobReviseRateInitiated
         - event: JobReviseRateCancelled(indexed bytes32)
-          handler: handleJobRevisedRateCancelled
+          handler: handleJobReviseRateCancelled
         - event: JobReviseRateFinalized(indexed bytes32,uint256)
-          handler: handleJobRevisedRateFinalized
+          handler: handleJobReviseRateFinalized
         - event: JobSettled(indexed bytes32,uint256,uint256)
           handler: handleJobSettled
         - event: JobWithdrew(indexed bytes32,indexed address,uint256)
@@ -48,4 +44,6 @@ dataSources:
           handler: handleProviderUpdatedWithCp
         - event: LockWaitTimeUpdated(indexed bytes32,uint256,uint256)
           handler: handleLockWaitTimeUpdated
-      file: ./src/implementation.ts
+        - event: JobMetadataUpdated(indexed bytes32,string)
+          handler: handleJobMetadataUpdated
+      file: ./src/MarketV1.ts
