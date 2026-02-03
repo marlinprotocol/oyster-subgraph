@@ -27,9 +27,9 @@ dataSources:
             address,uint256,uint256,uint256)
           handler: handleJobOpened
         - event: JobReviseRateInitiated(indexed bytes32,uint256)
-          handler: handleJobRevisedRateInitiated
+          handler: handleJobReviseRateInitiated
         - event: JobReviseRateCancelled(indexed bytes32)
-          handler: handleJobRevisedRateCancelled
+          handler: handleJobReviseRateCancelled
         - event: JobReviseRateFinalized(indexed bytes32,uint256)
           handler: handleJobReviseRateFinalized
         - event: JobSettled(indexed bytes32,uint256,uint256)
