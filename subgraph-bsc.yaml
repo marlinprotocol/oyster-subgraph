@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum
     name: MarketV1
-    network: arbitrum-one
+    network: bsc
     source:
-      address: "0x9d95D61eA056721E358BC49fE995caBF3B86A34B"
-      startBlock: 87252070
+      address: "0xc1a7730fb170FAd054e4587665d7B2fd3ce299e8"
+      startBlock: 51727300
       abi: MarketV1
     mapping:
       kind: ethereum/events

@@ -11,6 +11,9 @@
     "deploy-linea": "graph deploy --studio marlin-oyster-linea subgraph-linea.yaml",
     "deploy-linea-dev": "graph deploy --studio marlin-oyster-linea-dev subgraph-linea-dev.yaml",
     "deploy-polygon": "graph deploy --studio marlin-oyster-polygon subgraph-polygon.yaml",
+    "codegen-bsc": "graph codegen subgraph-bsc.yaml",
+    "build-bsc": "graph build subgraph-bsc.yaml",
+    "deploy-bsc": "graph deploy --studio marlin-oyster-bsc subgraph-bsc.yaml",
     "test": "graph test"
   },
   "dependencies": {
