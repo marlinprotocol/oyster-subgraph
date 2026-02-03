@@ -1,4 +1,7 @@
 import {
+    MarketV1 as MarketV1Contract,
+    AdminChanged,
+    BeaconUpgraded,
     JobOpened,
     JobSettled,
     JobClosed,
@@ -14,11 +17,19 @@ import {
     LockWaitTimeUpdated,
 } from "../generated/MarketV1/MarketV1";
 
-import { BigInt } from "@graphprotocol/graph-ts/common/numbers";
-import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, LockTime } from "../generated/schema";
+import { BigInt, Address } from "@graphprotocol/graph-ts";
+import { Job, SettlementHistory, DepositHistory, Provider, ReviseRateRequest, LockTime, Config } from "../generated/schema";
 import { log, store } from "@graphprotocol/graph-ts";
 
 export const FEE_REVISE_LOCK_SELECTOR: string = "0xbb00c34f1a27e23493f1bd516e88ec0af9b091cc990f207e765f5bd5af012243";
+
+export function handleAdminChanged(event: AdminChanged): void {
+    
+}
+
+export function handleBeaconUpgraded(event: BeaconUpgraded): void {
+ 
+}
 
 export function handleJobOpened(event: JobOpened): void {
     const id = event.params.job.toHex();
@@ -37,6 +48,7 @@ export function handleJobOpened(event: JobOpened): void {
     job.totalDeposit = event.params.balance;
     job.refund = BigInt.zero();
     job.createdAt = event.params.timestamp;
+    job.endAt = computeEndAt(job, event.address, event.block.timestamp);
 
     job.save();
 
@@ -64,6 +76,7 @@ export function handleJobDeposited(event: JobDeposited): void {
     }
     job.balance = job.balance.plus(event.params.amount);
     job.totalDeposit = job.totalDeposit.plus(event.params.amount);
+    job.endAt = computeEndAt(job, event.address, event.block.timestamp);
     job.save();
 
     const depositId = id + event.block.timestamp.toString() + "deposit";
@@ -104,6 +117,7 @@ export function handleJobClosed(event: JobClosed): void {
 
     job.refund = job.balance;
     job.balance = BigInt.zero();
+    job.endAt = event.block.timestamp;
     job.save();
 
 }
@@ -164,6 +178,7 @@ export function handleJobReviseRateFinalized(event: JobReviseRateFinalized): voi
     }
 
     job.rate = event.params.newRate;
+    job.endAt = computeEndAt(job, event.address, event.block.timestamp);
     job.save();
 }
 
@@ -183,6 +198,8 @@ export function handleJobSettled(event: JobSettled): void {
     }
 
     job.lastSettled = event.block.timestamp;
+    // NOTE: The end time should not change ideally in this case, added for future-proofing 
+    job.endAt = computeEndAt(job, event.address, event.block.timestamp);
     job.save();
 
     let settlementId = id + event.block.timestamp.toString();
@@ -212,6 +229,7 @@ export function handleJobWithdrew(event: JobWithdrew): void {
     const amount = event.params.amount;
     job.balance = job.balance.minus(amount);
     job.totalDeposit = job.totalDeposit.minus(amount);
+    job.endAt = computeEndAt(job, event.address, event.block.timestamp);
     job.save();
 
     const withdrawId = id + event.block.timestamp.toString() + "withdraw";
@@ -283,4 +301,71 @@ export function handleLockWaitTimeUpdated(event: LockWaitTimeUpdated): void {
     lockTime.id = id;
     lockTime.value = event.params.updatedLockTime;
     lockTime.save();
+}
+
+/*
+ * Compute the expected insolvency end timestamp for a job using on-chain EXTRA_DECIMALS.
+ * Translated from CP's insolvency_duration logic:
+ * - if rate == 0 => duration 0 (endAt = now)
+ * - else: seconds = (balance * 10^extra_decimals / rate) - 300 - (now - lastSettled)
+ */
+function computeEndAt(job: Job, contractAddress: Address, now: BigInt): BigInt {
+    const extraDecimalsI32 = getExtraDecimals(contractAddress);
+
+    if (job.rate.equals(BigInt.zero())) {
+        return now;
+    }
+
+    const pow = pow10(extraDecimalsI32);
+
+    const numerator = job.balance.times(pow);
+    const secs = numerator.div(job.rate);
+    const margin = BigInt.fromI32(300);
+
+    const secsAfterMargin = secs.gt(margin) ? secs.minus(margin) : BigInt.zero();
+    let elapsed = BigInt.zero();
+    if (now.gt(job.lastSettled)) {
+        elapsed = now.minus(job.lastSettled);
+    }
+
+    const remaining = secsAfterMargin.gt(elapsed) ? secsAfterMargin.minus(elapsed) : BigInt.zero();
+
+    return now.plus(remaining);
+}
+
+function getExtraDecimals(contractAddress: Address): i32 {
+    // try cache first
+    let cfg = Config.load("EXTRA_DECIMALS");
+    if (cfg) {
+        return cfg.value.toI32();
+    }
+
+    const contract = MarketV1Contract.bind(contractAddress);
+    const tryExtra = contract.try_EXTRA_DECIMALS();
+    let extra: i32 = 12;
+    if (tryExtra.reverted) {
+        return extra;
+    }
+
+    const extraBig = tryExtra.value;
+    if (extraBig.isI32()) {
+        extra = extraBig.toI32();
+        if (extra < 0) extra = 0;
+    }
+
+    // persist
+    let newCfg = new Config("EXTRA_DECIMALS");
+    newCfg.value = BigInt.fromI32(extra);
+    newCfg.save();
+
+    return extra;
+}
+
+function pow10(exp: i32): BigInt {
+    let result = BigInt.fromI32(1);
+    const base = BigInt.fromI32(10);
+    for (let i = 0; i < exp; i++) {
+        result = result.times(base);
+    }
+    return result;
 }
