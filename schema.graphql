@@ -4,7 +4,7 @@ enum RequestState {
   COMPLETED
 }
 
-type Job @entity {
+type Job @entity(immutable: false) {
   id: ID!
   metadata: String!
   owner: Bytes!
@@ -15,12 +15,13 @@ type Job @entity {
   totalDeposit: BigInt!
   refund: BigInt! # only updated on job close
   createdAt: BigInt!
+  endAt: BigInt!
   rateRevisionHistory: [ReviseRateRequest!]! @derivedFrom(field: "job")
   settlementHistory: [SettlementHistory!]! @derivedFrom(field: "job")
   depositHistory: [DepositHistory!]! @derivedFrom(field: "job")
 }
 
-type SettlementHistory @entity {
+type SettlementHistory @entity(immutable: true) {
   id: ID!
   job: Job!
   timestamp: BigInt!
@@ -28,7 +29,7 @@ type SettlementHistory @entity {
   txHash: Bytes!
 }
 
-type DepositHistory @entity {
+type DepositHistory @entity(immutable: true) {
   id: ID!
   job: Job!
   timestamp: BigInt!
@@ -37,7 +38,7 @@ type DepositHistory @entity {
   txHash: Bytes!
 }
 
-type ReviseRateRequest @entity {
+type ReviseRateRequest @entity(immutable: false) {
   id: ID!
   job: Job!
   updatesAt: BigInt!
@@ -45,13 +46,19 @@ type ReviseRateRequest @entity {
   value: BigInt!
 }
 
-type Provider @entity {
+type Provider @entity(immutable: false) {
   id: ID! #id same as owner address
   cp: String
   live: Boolean
 }
 
-type LockTime @entity {
+type LockTime @entity(immutable: false) {
+  id: ID!
+  value: BigInt!
+}
+
+# Config to store EXTRA_DECIMALS (global values)
+type Config @entity(immutable: false) {
   id: ID!
   value: BigInt!
 }
