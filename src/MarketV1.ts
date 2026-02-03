@@ -198,6 +198,7 @@ export function handleJobSettled(event: JobSettled): void {
     }
 
     job.lastSettled = event.block.timestamp;
+    // NOTE: The end time should not change ideally in this case, added for future-proofing 
     job.endAt = computeEndAt(job, event.address, event.block.timestamp);
     job.save();
 
